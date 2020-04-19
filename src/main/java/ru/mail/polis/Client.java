@@ -58,7 +58,7 @@ public final class Client {
     /**
      * Provides console to temporary DB.
      */
-    public static void main(final String[] args) throws IOException{
+    public static void main(final String[] args) throws IOException {
         final File data = new File(DATA);
         if (!data.exists() && !data.mkdir()) {
             throw new IOException("Can't create directory: " + data);
