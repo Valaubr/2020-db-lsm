@@ -9,7 +9,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 public class DAOImpl implements DAO {
-    SortedMap<ByteBuffer, Record> data = new TreeMap<>();
+    private final SortedMap<ByteBuffer, Record> data = new TreeMap<>();
 
     @NotNull
     @Override
@@ -29,6 +29,6 @@ public class DAOImpl implements DAO {
 
     @Override
     public void close() throws IOException {
-        //next time, yes?
+        data.clear();
     }
 }
