@@ -9,17 +9,20 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 public class DAOImpl implements DAO {
-    private final SortedMap<ByteBuffer, Record> data = new TreeMap<>();
+    private final SortedMap<ByteBuffer, ByteBuffer> data = new TreeMap<>();
 
     @NotNull
     @Override
     public Iterator<Record> iterator(@NotNull final ByteBuffer from) throws IOException {
-        return data.tailMap(from).values().iterator();
+        return data.tailMap(from).entrySet()
+                .stream()
+                .map(item -> Record.of(item.getKey(), item.getValue()))
+                .iterator();
     }
 
     @Override
     public void upsert(@NotNull final ByteBuffer key, final @NotNull ByteBuffer value) throws IOException {
-        data.put(key, Record.of(key, value));
+        data.put(key, value);
     }
 
     @Override
