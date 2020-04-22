@@ -1,4 +1,4 @@
-package ru.mail.polis;
+package ru.mail.polis.valaubr;
 
 import org.jetbrains.annotations.NotNull;
 import ru.mail.polis.DAO;
