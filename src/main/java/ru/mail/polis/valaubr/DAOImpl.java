@@ -1,4 +1,4 @@
-package ru.mail.polis.valaubr;
+package ru.mail.polis;
 
 import org.jetbrains.annotations.NotNull;
 import ru.mail.polis.DAO;
@@ -34,6 +34,5 @@ public class DAOImpl implements DAO {
 
     @Override
     public void close() throws IOException {
-        data.clear();
     }
 }
