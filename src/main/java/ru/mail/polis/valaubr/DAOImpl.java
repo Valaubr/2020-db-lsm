@@ -34,5 +34,6 @@ public class DAOImpl implements DAO {
 
     @Override
     public void close() throws IOException {
+        data.clear();
     }
 }
