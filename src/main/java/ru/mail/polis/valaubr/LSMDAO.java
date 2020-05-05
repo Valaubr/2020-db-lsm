@@ -21,9 +21,9 @@ import java.util.TreeMap;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 
-public class LsmDAO implements DAO {
+public class LSMDAO implements DAO {
 
-    private static final Logger logger = Logger.getLogger(LsmDAO.class.getName());
+    private static final Logger logger = Logger.getLogger(LSMDAO.class.getName());
 
     private static ByteBuffer EMPTY_BUFFER = ByteBuffer.allocate(0);
 
@@ -39,7 +39,7 @@ public class LsmDAO implements DAO {
 
     private int generation;
 
-    public LsmDAO(
+    public LSMDAO(
             @NotNull final File storage,
             final long flushThreshold) throws IOException {
         this.storage = storage;
