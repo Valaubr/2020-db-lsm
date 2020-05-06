@@ -21,6 +21,12 @@ import java.util.NavigableMap;
 import java.util.TreeMap;
 import java.util.stream.Stream;
 
+
+/**
+ * DAO implementation
+ *
+ * @author Valaubr
+ */
 public class LsmDAO implements DAO {
 
     private static final String FILE_POSTFIX = ".dat";
@@ -36,10 +42,9 @@ public class LsmDAO implements DAO {
     private int generation;
 
     /**
-     * 
-     * @param storage
-     * @param flushThreshold
-     * @throws IOException
+     * @param storage        - file
+     * @param flushThreshold - max table size
+     * @throws IOException   - file work exception
      */
     public LsmDAO(
             @NotNull final File storage,
