@@ -9,6 +9,7 @@ import ru.mail.polis.Record;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -22,10 +23,6 @@ import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 public class LsmDAO implements DAO {
-
-    private static final Logger logger = Logger.getLogger(LsmDAO.class.getName());
-
-    private static ByteBuffer EMPTY_BUFFER = ByteBuffer.allocate(0);
 
     private static final String FILE_POSTFIX = ".dat";
     private static final String TEMP_FILE_POSTFIX = ".tmp";
@@ -51,13 +48,13 @@ public class LsmDAO implements DAO {
                     .forEach(file -> {
                         final String fileName = file.getFileName().toString();
                         try {
-                            final int gen = Integer.parseInt(fileName.substring(0, fileName.indexOf(FILE_POSTFIX)));
-                            generation = Math.max(gen, generation);
-                            ssTables.put(gen, new SSTable(file.toFile()));
+                            if (fileName.substring(0, fileName.indexOf(FILE_POSTFIX)).matches("^\\d+$")) {
+                                final int gen = Integer.parseInt(fileName.substring(0, fileName.indexOf(FILE_POSTFIX)));
+                                generation = Math.max(gen, generation);
+                                ssTables.put(gen, new SSTable(file.toFile()));
+                            }
                         } catch (IOException e) {
-                            logger.info("Something went wrong in LsmDao ctor");
-                        } catch (NumberFormatException e) {
-                            logger.info("Unexpected name of SSTable file");
+                            throw new UncheckedIOException(e);
                         }
                     });
             generation++;
@@ -73,7 +70,7 @@ public class LsmDAO implements DAO {
             try {
                 iters.add(ssTable.iterator(from));
             } catch (IOException e) {
-                logger.info("Something went wrong in iterator func");
+                throw new UncheckedIOException(e);
             }
         });
 
@@ -112,7 +109,7 @@ public class LsmDAO implements DAO {
     private void flush() throws IOException {
         final File file = new File(storage, generation + TEMP_FILE_POSTFIX);
         file.createNewFile();
-        SSTable.serialize(file, memtable.iterator(EMPTY_BUFFER), memtable.size());
+        SSTable.serialize(file, memtable.iterator(ByteBuffer.allocate(0)), memtable.size());
         final File dst = new File(storage, generation + FILE_POSTFIX);
         Files.move(file.toPath(), dst.toPath(), StandardCopyOption.ATOMIC_MOVE);
         ++generation;
