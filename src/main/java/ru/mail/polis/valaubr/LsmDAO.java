@@ -19,7 +19,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NavigableMap;
 import java.util.TreeMap;
-import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 public class LsmDAO implements DAO {
@@ -36,6 +35,12 @@ public class LsmDAO implements DAO {
 
     private int generation;
 
+    /**
+     * 
+     * @param storage
+     * @param flushThreshold
+     * @throws IOException
+     */
     public LsmDAO(
             @NotNull final File storage,
             final long flushThreshold) throws IOException {
