@@ -22,9 +22,10 @@ import java.util.TreeMap;
 import java.util.stream.Stream;
 
 /**
- * DAO implementation
+ * DAO implementation.
+ * Persistence storage.
  *
- * @author Valaubr
+ * @author Ilya Chuprynin
  */
 public class LsmDAO implements DAO {
 
@@ -41,10 +42,12 @@ public class LsmDAO implements DAO {
     private int generation;
 
     /**
+     * DAO constructor for storage file with size limit
+     *
      * @param storage        - file
      * @param flushThreshold - max table size
      * @throws IOException - file work exception
-     **/
+     */
     public LsmDAO(
             @NotNull final File storage,
             final long flushThreshold) throws IOException {

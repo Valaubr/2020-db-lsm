@@ -158,17 +158,21 @@ public class SSTable implements Table {
 
     @Override
     public void upsert(@NotNull final ByteBuffer key, @NotNull final ByteBuffer value) throws IOException {
-        throw new UnsupportedOperationException("Sorry, read-only table.");
+        throw new UnsupportedOperationException("Sorry, operation upsert doesn`t exit, read-only table.");
     }
 
     @Override
     public void remove(@NotNull final ByteBuffer key) {
-        throw new UnsupportedOperationException("Sorry, read-only table.");
+        throw new UnsupportedOperationException("Sorry,operation remove doesn`t exit, read-only table.");
     }
 
     @Override
     public long getSizeInByte() {
-        throw new UnsupportedOperationException("Sorry, read-only table.");
+        try {
+            return fileChannel.size();
+        } catch (IOException e){
+            throw new UncheckedIOException(e);
+        }
     }
 
     @Override
