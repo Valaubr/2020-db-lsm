@@ -42,7 +42,7 @@ public class LsmDAO implements DAO {
     private int generation;
 
     /**
-     * DAO constructor for storage file with size limit
+     * DAO constructor for storage file with size limit.
      *
      * @param storage        - file
      * @param flushThreshold - max table size

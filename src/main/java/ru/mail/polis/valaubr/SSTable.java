@@ -170,7 +170,7 @@ public class SSTable implements Table {
     public long getSizeInByte() {
         try {
             return fileChannel.size();
-        } catch (IOException e){
+        } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
     }
