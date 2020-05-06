@@ -21,7 +21,6 @@ import java.util.NavigableMap;
 import java.util.TreeMap;
 import java.util.stream.Stream;
 
-
 /**
  * DAO implementation
  *
@@ -44,8 +43,8 @@ public class LsmDAO implements DAO {
     /**
      * @param storage        - file
      * @param flushThreshold - max table size
-     * @throws IOException   - file work exception
-     */
+     * @throws IOException - file work exception
+     **/
     public LsmDAO(
             @NotNull final File storage,
             final long flushThreshold) throws IOException {
