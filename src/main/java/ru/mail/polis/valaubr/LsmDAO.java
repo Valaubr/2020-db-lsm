@@ -1,7 +1,6 @@
 package ru.mail.polis.valaubr;
 
 import com.google.common.collect.Iterators;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.NotNull;
 import ru.mail.polis.DAO;
 import ru.mail.polis.Iters;
@@ -19,6 +18,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NavigableMap;
 import java.util.TreeMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 /**
@@ -32,7 +33,7 @@ public class LsmDAO implements DAO {
     private static final String FILE_POSTFIX = ".dat";
     private static final String TEMP_FILE_POSTFIX = ".tmp";
 
-    @NonNull
+    @NotNull
     private final File storage;
     private final long flushThreshold;
 
@@ -41,16 +42,19 @@ public class LsmDAO implements DAO {
 
     private int generation;
 
+    private final Pattern pattern = Pattern.compile("^\\d+$");
+
     /**
      * DAO constructor for storage file with size limit.
      *
-     * @param storage        - file
-     * @param flushThreshold - max table size
-     * @throws IOException - file work exception
+     * @param storage        the path to the file where the files will be stored
+     * @param flushThreshold max table size
+     * @throws IOException file work exception
      */
     public LsmDAO(
             @NotNull final File storage,
             final long flushThreshold) throws IOException {
+        assert flushThreshold > 0L;
         this.storage = storage;
         this.flushThreshold = flushThreshold;
         this.memtable = new MemTable();
@@ -60,7 +64,7 @@ public class LsmDAO implements DAO {
                     .forEach(file -> {
                         final String fileName = file.getFileName().toString();
                         try {
-                            if (fileName.substring(0, fileName.indexOf(FILE_POSTFIX)).matches("^\\d+$")) {
+                            if (pattern.matcher(fileName.substring(0, fileName.indexOf(FILE_POSTFIX))).find()) {
                                 final int gen = Integer.parseInt(fileName.substring(0, fileName.indexOf(FILE_POSTFIX)));
                                 generation = Math.max(gen, generation);
                                 ssTables.put(gen, new SSTable(file.toFile()));
@@ -105,14 +109,14 @@ public class LsmDAO implements DAO {
     @Override
     public void remove(@NotNull final ByteBuffer key) throws IOException {
         memtable.remove(key);
-        if (memtable.getSizeInByte() >= flushThreshold) {
+        if (memtable.getSizeInByte() > flushThreshold) {
             flush();
         }
     }
 
     @Override
     public void close() throws IOException {
-        if (memtable.size() >= 0) {
+        if (memtable.size() > 0) {
             flush();
         }
         ssTables.values().forEach(Table::close);

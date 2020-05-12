@@ -56,7 +56,6 @@ public class SSTable implements Table {
             final File file,
             final Iterator<Cell> iterator,
             final int size) throws IOException {
-
         try (FileChannel fileChannel = FileChannel.open(file.toPath(), StandardOpenOption.WRITE)) {
 
             final List<Integer> offsets = new ArrayList<>();

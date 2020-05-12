@@ -28,6 +28,9 @@ public class MemTable implements Table {
      *
      * Total: n + n + 68 (about when inserting a new object)
      */
+    private final int NEW_VALUE_ADDITIONAL_SIZE = 68;
+    private final int OLD_VALUE_ADDITIONAL_SIZE = 39;
+    private final int KEY_ADDITIONAL_SIZE = 15;
     private final SortedMap<ByteBuffer, Value> map = new TreeMap<>();
 
     private int sizeInBytes;
@@ -48,25 +51,22 @@ public class MemTable implements Table {
 
     @Override
     public void upsert(@NotNull final ByteBuffer key, @NotNull final ByteBuffer value) {
-        final Value val = map.get(key);
+        final Value val = map.put(key, new Value(System.currentTimeMillis(), value.duplicate()));
         if (val == null) {
-            sizeInBytes += key.remaining() + value.remaining() + 68;
-
+            sizeInBytes += key.remaining() + value.remaining() + NEW_VALUE_ADDITIONAL_SIZE;
         } else {
-            sizeInBytes += value.remaining() + 39;
+            sizeInBytes += value.remaining() + OLD_VALUE_ADDITIONAL_SIZE;
         }
-        map.put(key.duplicate(), new Value(System.currentTimeMillis(), value.duplicate()));
     }
 
     @Override
     public void remove(@NotNull final ByteBuffer key) {
-        final Value val = map.get(key);
+        final Value val = map.put(key, new Value(System.currentTimeMillis()));
         if (val == null) {
-            sizeInBytes += key.remaining() + Long.BYTES;
+            sizeInBytes += key.remaining() + KEY_ADDITIONAL_SIZE;
         } else if (!val.isTombstone()) {
             sizeInBytes -= val.getData().remaining();
         }
-        map.put(key.duplicate(), new Value(System.currentTimeMillis()));
     }
 
     @Override
