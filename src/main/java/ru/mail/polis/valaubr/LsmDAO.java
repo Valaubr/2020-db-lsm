@@ -1,6 +1,5 @@
 package ru.mail.polis.valaubr;
 
-import com.google.common.collect.Comparators;
 import com.google.common.collect.Iterators;
 import org.jetbrains.annotations.NotNull;
 import ru.mail.polis.DAO;
@@ -30,13 +29,14 @@ public class LsmDAO implements DAO {
 
     private static final String FILE_POSTFIX = ".dat";
     private static final String TEMP_FILE_POSTFIX = ".tmp";
+    private static final String LSM_TEMP_FILE = "temp.tmp";
 
     @NotNull
     private final File storage;
     private final long flushThreshold;
 
     private MemTable memtable;
-    private NavigableMap<Integer, Table> ssTables;
+    private final NavigableMap<Integer, Table> ssTables;
 
     private int generation;
 
@@ -134,7 +134,7 @@ public class LsmDAO implements DAO {
 
     @Override
     public void compact() throws IOException {
-        final File tempFile = new File(storage, "sss");
+        final File tempFile = new File(storage, LSM_TEMP_FILE);
         tempFile.createNewFile();
         SSTable.serialize(
                 tempFile,
