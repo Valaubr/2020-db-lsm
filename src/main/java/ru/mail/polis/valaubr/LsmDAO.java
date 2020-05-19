@@ -144,7 +144,7 @@ public class LsmDAO implements DAO {
                 tempFile,
                 cellIterator(ByteBuffer.allocate(0))
         );
-        for (int i = 1; i < generation; i++) {
+        for (int i = 0; i < generation; ++i) {
             Files.delete(new File(storage, i + FILE_POSTFIX).toPath());
         }
         generation = 1;
@@ -156,3 +156,4 @@ public class LsmDAO implements DAO {
         memtable = new MemTable();
     }
 }
+
